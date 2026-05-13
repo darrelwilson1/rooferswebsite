@@ -82,7 +82,7 @@ export function Hero() {
             delay={0.2}
             className="block"
           >
-            Roofs built to
+            The roofs that
           </SplitText>
           <SplitText
             as="span"
@@ -92,7 +92,7 @@ export function Hero() {
             delay={0.45}
             className="block italic font-light"
           >
-            outlast the architect.
+            make dreams.
           </SplitText>
         </h1>
       </div>
