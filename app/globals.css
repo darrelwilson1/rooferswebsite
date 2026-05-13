@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0e0e0c;
+  --color-bone: #f5f1ea;
+  --color-bone-dim: rgba(245, 241, 234, 0.6);
+  --color-bone-faint: rgba(245, 241, 234, 0.32);
+  --color-champagne: #c9a96e;
+  --color-champagne-dim: rgba(201, 169, 110, 0.5);
+  --color-graphite: #3a3a36;
+  --color-graphite-soft: #1a1a17;
+
+  --font-display: var(--font-fraunces), "Times New Roman", serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  --tracking-tight-display: -0.04em;
+  --tracking-eyebrow: 0.22em;
+  --tracking-label: 0.16em;
+
+  --ease-editorial: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-champagne);
+    color: var(--color-ink);
+  }
+
+  /* Hide native cursor when custom cursor is active */
+  @media (hover: hover) and (pointer: fine) {
+    html.has-cursor,
+    html.has-cursor * {
+      cursor: none !important;
+    }
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-bone-dim);
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: var(--tracking-tight-display);
+    line-height: 0.95;
+  }
+
+  .hairline {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-bone-faint) 20%,
+      var(--color-bone-faint) 80%,
+      transparent
+    );
+  }
+
+  .reveal-mask {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  .marquee-mask {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 6%,
+      black 94%,
+      transparent
+    );
+  }
+
+  /* Container queries-friendly wrappers */
+  .container-edge {
+    padding-inline: clamp(1.25rem, 4vw, 3rem);
+  }
+}
+
+/* Char/word split animations injected by SplitText */
+.split-line {
+  display: block;
+  overflow: hidden;
+}
+.split-word,
+.split-char {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hide scrollbar on horizontal scroll containers (we drive it w/ GSAP) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
