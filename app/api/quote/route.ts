@@ -4,32 +4,6 @@ import client from "@/db";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Temporary diagnostic. Returns sanitized info about MONGODB_URI so we can
-// verify Hostinger picked up env-var changes. No credentials are exposed.
-export async function GET() {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    return NextResponse.json({ uriPresent: false });
-  }
-  let host: string | null = null;
-  let dbName: string | null = null;
-  try {
-    const url = new URL(uri);
-    host = url.host;
-    dbName = url.pathname.replace(/^\//, "") || null;
-  } catch {
-    // ignore
-  }
-  return NextResponse.json({
-    uriPresent: true,
-    length: uri.length,
-    startsWith: uri.slice(0, 14),
-    endsWithLast4: uri.slice(-4),
-    host,
-    dbName,
-  });
-}
-
 const SERVICES = ["New roof", "Replacement", "Restoration", "Storm repair"] as const;
 type Service = (typeof SERVICES)[number];
 
@@ -81,7 +55,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, id: result.insertedId }, { status: 201 });
   } catch (err) {
     console.error("Quote insert failed:", err);
-    const detail = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: "Database error", detail }, { status: 500 });
+    return NextResponse.json({ error: "Database error" }, { status: 500 });
   }
 }
