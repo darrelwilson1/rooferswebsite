@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-// @ts-expect-error - db.js is a CommonJS module without type declarations
 import client from "@/db";
 
 export const runtime = "nodejs";
