@@ -16,10 +16,42 @@ export function Contact() {
     "Replacement",
   );
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitted(true);
+    if (submitting) return;
+    setSubmitting(true);
+    setError(null);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const payload = {
+      name: String(data.get("name") ?? ""),
+      email: String(data.get("email") ?? ""),
+      phone: String(data.get("phone") ?? ""),
+      address: String(data.get("address") ?? ""),
+      message: String(data.get("message") ?? ""),
+      service,
+    };
+
+    try {
+      const res = await fetch("/api/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const { error: msg } = await res.json().catch(() => ({ error: null }));
+        throw new Error(msg ?? `Request failed (${res.status})`);
+      }
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -108,10 +140,11 @@ export function Contact() {
                 <button
                   type="submit"
                   data-cursor="hover"
-                  className="group self-start mt-4 inline-flex items-center gap-5"
+                  disabled={submitting}
+                  className="group self-start mt-4 inline-flex items-center gap-5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="font-display text-3xl lg:text-4xl text-bone">
-                    Schedule survey
+                    {submitting ? "Sending…" : "Schedule survey"}
                   </span>
                   <span className="block w-16 h-px bg-bone overflow-hidden">
                     <span className="block h-px bg-champagne origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700" />
@@ -120,6 +153,15 @@ export function Contact() {
                     →
                   </span>
                 </button>
+
+                {error && (
+                  <p
+                    role="alert"
+                    className="text-sm text-red-300/90 border-t border-red-300/20 pt-4"
+                  >
+                    {error}
+                  </p>
+                )}
               </form>
             ) : (
               <div className="border-t border-bone-faint/30 pt-10">
