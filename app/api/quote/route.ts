@@ -55,6 +55,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, id: result.insertedId }, { status: 201 });
   } catch (err) {
     console.error("Quote insert failed:", err);
-    return NextResponse.json({ error: "Database error" }, { status: 500 });
+    const detail = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "Database error", detail }, { status: 500 });
   }
 }
